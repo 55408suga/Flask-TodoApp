@@ -1,0 +1,16 @@
+# Git管理ファイル
+.git
+.gitignore
+
+.venv/
+
+# Pythonキャッシュ
+__pycache__/
+*.py[cod]
+
+# DBファイル（コンテナの中にローカルのDBを巻き込まない）
+*.db
+instance/
+
+# VS Code設定
+.vscode/
