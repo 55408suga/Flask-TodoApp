@@ -10,10 +10,26 @@ class PlainTodoSchema(Schema):
     is_done = fields.Bool(load_default=False)
 
 
+class PlainTagSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+
+
 class TodoUpdateSchema(Schema):
     name = fields.Str()
-    deadline = fields.DateTime(allow_none=True)
+    deadline = fields.DateTime()
     is_done = fields.Bool()
 
+
 class TodoSchema(PlainTodoSchema):
-    pass
+    tags = fields.List(fields.Nested(PlainTodoSchema),dump_only=True)
+
+
+class TagSchema(PlainTagSchema):
+    todos = fields.List(fields.Nested(PlainTodoSchema),dump_only=True)
+
+
+class TagAndTodoSchema(Schema):
+    message = fields.Str()
+    tag = fields.Nested(TagSchema)
+    todo = fields.Nested(TodoSchema)

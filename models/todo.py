@@ -10,3 +10,4 @@ class TodoModel(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     deadline = db.Column(db.DateTime,nullable=True)
     is_done = db.Column(db.Boolean,default=False,nullable=False)
+    tags =db.relationship("TagModel",back_populates="todos",secondary="todo_tags")
