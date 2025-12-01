@@ -24,7 +24,7 @@ REST APIs with Flask and Python in 2025 という Udemy の講座で学んだこ
 
 ```bash
 # 1. リポジトリのクローン
-git clone [https://github.com/55408suga/Flask-TodoApp.git](https://github.com/55408suga/Flask-TodoApp.git)
+git clone https://github.com/55408suga/Flask-TodoApp.git
 cd Flask-TodoApp
 ```
 
