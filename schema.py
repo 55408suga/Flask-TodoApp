@@ -1,4 +1,4 @@
-from marshmallow import Schema,fields
+from marshmallow import Schema, fields
 
 
 class PlainTodoSchema(Schema):
@@ -22,11 +22,11 @@ class TodoUpdateSchema(Schema):
 
 
 class TodoSchema(PlainTodoSchema):
-    tags = fields.List(fields.Nested(PlainTodoSchema),dump_only=True)
+    tags = fields.List(fields.Nested(PlainTodoSchema), dump_only=True)
 
 
 class TagSchema(PlainTagSchema):
-    todos = fields.List(fields.Nested(PlainTodoSchema),dump_only=True)
+    todos = fields.List(fields.Nested(PlainTodoSchema), dump_only=True)
 
 
 class TagAndTodoSchema(Schema):
