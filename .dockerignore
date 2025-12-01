@@ -8,7 +8,7 @@
 __pycache__/
 *.py[cod]
 
-# DBファイル（コンテナの中にローカルのDBを巻き込まない）
+# DBファイル
 *.db
 instance/
 
