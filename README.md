@@ -1,6 +1,6 @@
 # TodoApp
 
-## 概要 (Overview)
+## 概要
 
 REST APIs with Flask and Python in 2025 という Udemy の講座で学んだことをアウトプットするために作成した、Flask での Todo を管理できるアプリケーションです。今後様々な機能を実装予定です。
 
@@ -18,7 +18,7 @@ REST APIs with Flask and Python in 2025 という Udemy の講座で学んだこ
 
 ## 起動方法
 
-### Docker を使用する場合（推奨）
+### Docker を使用する場合
 
 以下のコマンドを実行するだけで、環境構築からサーバー起動まで完了します。
 
@@ -26,7 +26,9 @@ REST APIs with Flask and Python in 2025 という Udemy の講座で学んだこ
 # 1. リポジトリのクローン
 git clone [https://github.com/55408suga/Flask-TodoApp.git](https://github.com/55408suga/Flask-TodoApp.git)
 cd Flask-TodoApp
+```
 
+```bash
 # 2. ビルドと起動
 docker compose up --build
 ```
