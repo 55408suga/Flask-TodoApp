@@ -2,8 +2,8 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from db import db
-from models import *
-from schema import *
+from models import TagModel,TodoModel
+from schema import TagSchema,TagAndTodoSchema
 
 blp = Blueprint("Tags", "tags", description="Operation on tags", url_prefix="/api")
 
