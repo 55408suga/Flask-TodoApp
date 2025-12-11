@@ -17,10 +17,12 @@ class PlainTagSchema(Schema):
 
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(required=True)
+    username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)
+    tags = fields.List(fields.Nested(PlainTagSchema), dump_only=True)
+    todos = fields.List(fields.Nested(PlainTodoSchema), dump_only=True)
 
-
+    
 class TodoUpdateSchema(Schema):
     name = fields.Str()
     deadline = fields.DateTime()

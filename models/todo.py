@@ -14,4 +14,4 @@ class TodoModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     tags = db.relationship("TagModel", back_populates="todos", secondary="todo_tags")
     # 以下いらないかも
-    user = db.relationship("UserModel", back_populates="tags")
+    user = db.relationship("UserModel", back_populates="todos")

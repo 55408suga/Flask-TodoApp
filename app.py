@@ -6,6 +6,7 @@ from db import db
 import models
 from resources.todo import blp as TodoBlueprint
 from resources.tag import blp as TagBlueprint
+from resources.user import blp as UserBlueprint
 
 
 def create_app(db_url=None):
@@ -81,4 +82,5 @@ def create_app(db_url=None):
     api = Api(app)
     api.register_blueprint(TodoBlueprint)
     api.register_blueprint(TagBlueprint)
+    api.register_blueprint(UserBlueprint)
     return app
