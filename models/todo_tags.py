@@ -7,3 +7,4 @@ class TodoTags(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey("tags.id"), nullable=False)
     todo_id = db.Column(db.Integer, db.ForeignKey("todos.id"), nullable=False)
+    
