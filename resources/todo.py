@@ -22,7 +22,7 @@ class Todo(MethodView):
             db.session.commit()
         except SQLAlchemyError:
             abort(500, message="an error occured while deleting the todo")
-        return "",204
+        return "", 204
 
     @blp.arguments(TodoUpdateSchema)
     def patch(self, todo_data, todo_id):
@@ -31,7 +31,7 @@ class Todo(MethodView):
         todo.deadline = todo_data.get("deadline", todo.deadline)
         todo.is_done = todo_data.get("is_done", todo.is_done)
         db.session.commit()
-        return "",204
+        return "", 204
 
 
 @blp.route("/todos")
@@ -48,4 +48,4 @@ class TodoList(MethodView):
             db.session.commit()
         except SQLAlchemyError:
             abort(500, message="an error occured while inserting the todo")
-        return "",204
+        return "", 204
