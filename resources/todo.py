@@ -1,3 +1,4 @@
+from flask import request
 from flask_smorest import abort, Blueprint
 from flask.views import MethodView
 from sqlalchemy.exc import SQLAlchemyError
@@ -38,6 +39,9 @@ class Todo(MethodView):
 class TodoList(MethodView):
     @blp.response(200, TodoSchema(many=True))
     def get(self):
+        name = request.args.get("name")
+        if name:
+            return TodoModel.query.filter(TodoModel.name.contains(name)).all()
         return TodoModel.query.all()
 
     @blp.arguments(TodoSchema)
