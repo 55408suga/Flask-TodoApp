@@ -1,5 +1,5 @@
 import os
-from flask import Flask,jsonify
+from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from db import db
@@ -26,7 +26,7 @@ def create_app(db_url=None):
     db.init_app(app)
     with app.app_context():
         db.create_all()
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY","local-secret-key")
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "local-secret-key")
     jwt = JWTManager(app)
 
     @jwt.expired_token_loader
@@ -77,7 +77,7 @@ def create_app(db_url=None):
             ),
             401,
         )
-    
+
     api = Api(app)
     api.register_blueprint(TodoBlueprint)
     api.register_blueprint(TagBlueprint)

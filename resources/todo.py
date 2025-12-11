@@ -33,10 +33,10 @@ class Todo(MethodView):
         todo.deadline = todo_data.get("deadline", todo.deadline)
         todo.is_done = todo_data.get("is_done", todo.is_done)
         try:
-         db.session.commit(todo)
+            db.session.commit(todo)
         except SQLAlchemyError:
             db.session.rollback()
-            abort(500,message="An error occurred while updating the todo")
+            abort(500, message="An error occurred while updating the todo")
         return "", 204
 
 

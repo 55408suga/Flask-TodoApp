@@ -3,7 +3,7 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from db import db
 from models import TagModel, TodoModel
-from schema import TagSchema,PlainTagSchema
+from schema import TagSchema, PlainTagSchema
 
 blp = Blueprint("Tags", "tags", description="Operation on tags", url_prefix="/api")
 
@@ -43,11 +43,11 @@ class Tag(MethodView):
                 db.session.commit()
             except SQLAlchemyError:
                 db.session.rollback()
-                abort(500,message="an error occurred while deteling the tag")
+                abort(500, message="an error occurred while deteling the tag")
             return ""
         abort(
             400,
-            message = "Could not delete tag. Make sure tag is not associated with any todos, then try again.",
+            message="Could not delete tag. Make sure tag is not associated with any todos, then try again.",
         )
 
 
