@@ -21,8 +21,9 @@ class Tags(MethodView):
         try:
             db.session.add(tag)
             db.session.commit()
-        except SQLAlchemyError as e:
-            abort(500, message=str(e))
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(500, message="An error occured while inserting the tag")
         return ""
 
 
@@ -37,8 +38,12 @@ class Tag(MethodView):
     def delete(self, tag_id):
         tag = TagModel.query.get_or_404(tag_id)
         if not tag.todos:
-            db.session.delete(tag)
-            db.session.commit()
+            try:
+                db.session.delete(tag)
+                db.session.commit()
+            except SQLAlchemyError:
+                db.session.rollback()
+                abort(500,message="an error occurred while deteling the tag")
             return ""
         abort(
             400,
@@ -66,6 +71,7 @@ class LinkTagsToItem(MethodView):
                 db.session.add(todo)
                 db.session.commit()
             except SQLAlchemyError:
+                db.session.rollback()
                 abort(500, message="An error occurred while inserting the tag.")
         return ""
 
@@ -79,5 +85,6 @@ class LinkTagsToItem(MethodView):
                 db.session.add(todo)
                 db.session.commit()
             except SQLAlchemyError:
-                abort(400, message="An error occurred while deleting the tag.")
+                db.session.rollback()
+                abort(500, message="An error occurred while deleting the tag.")
         return ""

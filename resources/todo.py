@@ -22,6 +22,7 @@ class Todo(MethodView):
             db.session.delete(todo)
             db.session.commit()
         except SQLAlchemyError:
+            db.session.rollback()
             abort(500, message="an error occured while deleting the todo")
         return "", 204
 
@@ -31,7 +32,11 @@ class Todo(MethodView):
         todo.name = todo_data.get("name", todo.name)
         todo.deadline = todo_data.get("deadline", todo.deadline)
         todo.is_done = todo_data.get("is_done", todo.is_done)
-        db.session.commit()
+        try:
+         db.session.commit(todo)
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(500,message="An error occurred while updating the todo")
         return "", 204
 
 
