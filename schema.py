@@ -22,7 +22,7 @@ class TodoUpdateSchema(Schema):
 
 
 class TodoSchema(PlainTodoSchema):
-    tags = fields.List(fields.Nested(PlainTodoSchema), dump_only=True)
+    tags = fields.List(fields.Nested(PlainTagSchema), dump_only=True)
 
 
 class TagSchema(PlainTagSchema):
