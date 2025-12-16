@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from ariadne import graphql_sync
 from ariadne.explorer import ExplorerGraphiQL
-from graphql.index import schema
+from gql.index import schema
 
 blp = Blueprint("graphql", __name__)
 

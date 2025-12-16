@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request  # ★requestを追加
+from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from ariadne import graphql_sync
@@ -10,7 +10,8 @@ from resources.todo import blp as TodoBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
 from resources.graphql_route import blp as GraphQLBlueprint
-from graphql.index import schema 
+from gql.index import schema
+
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -28,16 +29,16 @@ def create_app(db_url=None):
         "DATABASE_URL", "sqlite:///data.db"
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    
+
     db.init_app(app)
     with app.app_context():
         db.create_all()
 
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "local-secret-key")
-    
+
     # ーーーXSS対策(Cookie設定)ーーー
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    app.config["JWT_COOKIE_SECURE"] = False 
+    app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
     app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
     app.config["JWT_REFRESH_COOKIE_PATH"] = "/api/refresh"

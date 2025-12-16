@@ -3,11 +3,19 @@ type User {
   username: String!
 }
 
+type Tag {
+  id: ID!
+  name: String!
+}
+
 type Todo {
   id: ID!
   name: String!
   is_done: Boolean!
+  created_at: String
+  updated_at: String
   deadline: String
+  tags: [Tag!]!
   user: User!
 }
 
