@@ -85,8 +85,21 @@ def create_app(db_url=None):
             ),
             401,
         )
-
     api = Api(app)
+    api.spec.components.security_scheme("cookieAuth", {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token_cookie",
+        "description": "ログイン後にブラウザが自動送信するCookie"
+    })
+
+    api.spec.components.security_scheme("csrfToken", {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN",
+        "description": "CSRF対策用トークン。ログインレスポンスのCookie(csrf_access_token)の値を入力してください。"
+    })
+    api.spec.options["security"] = [{"cookieAuth": [], "csrfToken": []}]
     api.register_blueprint(TodoBlueprint)
     api.register_blueprint(TagBlueprint)
     api.register_blueprint(UserBlueprint)

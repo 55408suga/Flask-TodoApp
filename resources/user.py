@@ -22,6 +22,7 @@ blp = Blueprint("users", "users", description="Operation on users",url_prefix="/
 @blp.route("/register")
 class UserRegister(MethodView):
     @blp.arguments(UserSchema)
+    @blp.doc(security=[])
     def post(self, user_data):
         user = UserModel(
             username=user_data["username"],
@@ -38,6 +39,7 @@ class UserRegister(MethodView):
 @blp.route("/login")
 class UserLogin(MethodView):
     @blp.arguments(UserSchema)
+    @blp.doc(security=[])
     def post(self, user_data):
         user = UserModel.query.filter(
             UserModel.username == user_data["username"]
