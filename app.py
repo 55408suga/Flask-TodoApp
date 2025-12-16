@@ -79,7 +79,7 @@ def create_app(db_url=None):
         return (
             jsonify(
                 {
-                    "description": "Request does not contain an csfr token.",
+                    "description": "Request does not contain an access token.",
                     "error": "authorization_required",
                 }
             ),
