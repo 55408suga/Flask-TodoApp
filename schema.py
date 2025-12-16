@@ -22,7 +22,7 @@ class UserSchema(Schema):
     tags = fields.List(fields.Nested(PlainTagSchema), dump_only=True)
     todos = fields.List(fields.Nested(PlainTodoSchema), dump_only=True)
 
-    
+
 class TodoUpdateSchema(Schema):
     name = fields.Str()
     deadline = fields.DateTime()

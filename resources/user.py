@@ -16,7 +16,7 @@ from db import db
 from models import UserModel
 from schema import UserSchema
 
-blp = Blueprint("users", "users", description="Operation on users",url_prefix="/api")
+blp = Blueprint("users", "users", description="Operation on users", url_prefix="/api")
 
 
 @blp.route("/register")
@@ -33,7 +33,7 @@ class UserRegister(MethodView):
             db.session.commit()
         except SQLAlchemyError:
             abort(500, message="An error ocurred while inserting the user")
-        return "",201
+        return "", 201
 
 
 @blp.route("/login")
@@ -61,8 +61,9 @@ class TokenRefresh(MethodView):
         user_id = get_jwt_identity()
         new_token = create_access_token(identity=user_id, fresh=False)
         response = make_response()
-        set_access_cookies(response,new_token)
-        return response,204
+        set_access_cookies(response, new_token)
+        return response, 204
+
 
 @blp.route("/logout")
 class UserLogout(MethodView):
@@ -70,5 +71,7 @@ class UserLogout(MethodView):
     def post(self):
         response = make_response()
         unset_jwt_cookies(response)
-        return response,204
-#後でredisにblocklist
+        return response, 204
+
+
+# 後でredisにblocklist

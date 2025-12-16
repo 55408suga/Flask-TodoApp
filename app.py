@@ -28,13 +28,13 @@ def create_app(db_url=None):
     with app.app_context():
         db.create_all()
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "local-secret-key")
-    #ーーーXSS対策ーーー
+    # ーーーXSS対策ーーー
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
     app.config["JWT_COOKIE_SECURE"] = False
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
     app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
     app.config["JWT_REFRESH_COOKIE_PATH"] = "/api/refresh"
-    #ーーーXSS対策ーーー
+    # ーーーXSS対策ーーー
     jwt = JWTManager(app)
 
     @jwt.expired_token_loader
@@ -85,20 +85,27 @@ def create_app(db_url=None):
             ),
             401,
         )
-    api = Api(app)
-    api.spec.components.security_scheme("cookieAuth", {
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "access_token_cookie",
-        "description": "ログイン後にブラウザが自動送信するCookie"
-    })
 
-    api.spec.components.security_scheme("csrfToken", {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-CSRF-TOKEN",
-        "description": "CSRF対策用トークン。ログインレスポンスのCookie(csrf_access_token)の値を入力してください。"
-    })
+    api = Api(app)
+    api.spec.components.security_scheme(
+        "cookieAuth",
+        {
+            "type": "apiKey",
+            "in": "cookie",
+            "name": "access_token_cookie",
+            "description": "ログイン後にブラウザが自動送信するCookie",
+        },
+    )
+
+    api.spec.components.security_scheme(
+        "csrfToken",
+        {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-CSRF-TOKEN",
+            "description": "CSRF対策用トークン。ログインレスポンスのCookie(csrf_access_token)の値を入力してください。",
+        },
+    )
     api.spec.options["security"] = [{"cookieAuth": [], "csrfToken": []}]
     api.register_blueprint(TodoBlueprint)
     api.register_blueprint(TagBlueprint)
