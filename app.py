@@ -1,16 +1,23 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request  # ★requestを追加
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
+from ariadne import graphql_sync
+from ariadne.explorer import ExplorerGraphiQL
 from db import db
 import models
 from resources.todo import blp as TodoBlueprint
 from resources.tag import blp as TagBlueprint
 from resources.user import blp as UserBlueprint
+from resources.graphql_route import blp as GraphQLBlueprint
+
+# ★追加: 作成したGraphQLスキーマを読み込む
+from graphql.index import schema
 
 
 def create_app(db_url=None):
     app = Flask(__name__)
+
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "TodoApp REST API"
     app.config["API_VERSION"] = "v1"
@@ -24,17 +31,21 @@ def create_app(db_url=None):
         "DATABASE_URL", "sqlite:///data.db"
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
     db.init_app(app)
     with app.app_context():
         db.create_all()
+
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "local-secret-key")
-    # ーーーXSS対策ーーー
+
+    # ーーーXSS対策(Cookie設定)ーーー
     app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-    app.config["JWT_COOKIE_SECURE"] = False
+    app.config["JWT_COOKIE_SECURE"] = False  # 本番(HTTPS)ならTrue
     app.config["JWT_COOKIE_CSRF_PROTECT"] = True
     app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
     app.config["JWT_REFRESH_COOKIE_PATH"] = "/api/refresh"
     # ーーーXSS対策ーーー
+
     jwt = JWTManager(app)
 
     @jwt.expired_token_loader
@@ -87,6 +98,8 @@ def create_app(db_url=None):
         )
 
     api = Api(app)
+
+    # Swagger UI用のセキュリティ定義 (Cookie & CSRF)
     api.spec.components.security_scheme(
         "cookieAuth",
         {
@@ -96,18 +109,19 @@ def create_app(db_url=None):
             "description": "ログイン後にブラウザが自動送信するCookie",
         },
     )
-
     api.spec.components.security_scheme(
         "csrfToken",
         {
             "type": "apiKey",
             "in": "header",
             "name": "X-CSRF-TOKEN",
-            "description": "CSRF対策用トークン。ログインレスポンスのCookie(csrf_access_token)の値を入力してください。",
+            "description": "CSRF対策用トークン",
         },
     )
     api.spec.options["security"] = [{"cookieAuth": [], "csrfToken": []}]
+
     api.register_blueprint(TodoBlueprint)
     api.register_blueprint(TagBlueprint)
     api.register_blueprint(UserBlueprint)
+    app.register_blueprint(GraphQLBlueprint)
     return app
