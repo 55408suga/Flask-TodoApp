@@ -28,6 +28,13 @@ def create_app(db_url=None):
     with app.app_context():
         db.create_all()
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "local-secret-key")
+    #ーーーXSS対策ーーー
+    app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+    app.config["JWT_COOKIE_SECURE"] = False
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+    app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
+    app.config["JWT_REFRESH_COOKIE_PATH"] = "/api/refresh"
+    #ーーーXSS対策ーーー
     jwt = JWTManager(app)
 
     @jwt.expired_token_loader
@@ -72,7 +79,7 @@ def create_app(db_url=None):
         return (
             jsonify(
                 {
-                    "description": "Request does not contain an access token.",
+                    "description": "Request does not contain an csfr token.",
                     "error": "authorization_required",
                 }
             ),

@@ -1,8 +1,12 @@
+from flask import make_response
 from passlib.hash import pbkdf2_sha256
 from flask.views import MethodView
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies,
     jwt_required,
     get_jwt_identity,
 )
@@ -28,7 +32,7 @@ class UserRegister(MethodView):
             db.session.commit()
         except SQLAlchemyError:
             abort(500, message="An error ocurred while inserting the user")
-        return ""
+        return "",201
 
 
 @blp.route("/login")
@@ -39,9 +43,12 @@ class UserLogin(MethodView):
             UserModel.username == user_data["username"]
         ).first()
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
+            response = make_response()
             access_token = create_access_token(identity=str(user.id), fresh=True)
             refresh_token = create_refresh_token(identity=str(user.id))
-            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            return response, 204
         abort(401, "Invalid credentials")
 
 
@@ -51,7 +58,15 @@ class TokenRefresh(MethodView):
     def post(self):
         user_id = get_jwt_identity()
         new_token = create_access_token(identity=user_id, fresh=False)
-        return {"access_token": new_token}
+        response = make_response()
+        set_access_cookies(response,new_token)
+        return response,204
 
-
-# 後でlogout
+@blp.route("/logout")
+class UserLogout(MethodView):
+    @jwt_required()
+    def post(self):
+        response = make_response()
+        unset_jwt_cookies(response)
+        return response,204
+#後でredisにblocklist
