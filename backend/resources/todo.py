@@ -63,8 +63,8 @@ class TodoList(MethodView):
         if name:
             return TodoModel.query.filter(
                 TodoModel.user_id == access_user, TodoModel.name.contains(name)
-            ).all()
-        return TodoModel.query.filter(TodoModel.user_id == access_user).all()
+            ).order_by(TodoModel.created_at.desc(), TodoModel.id.desc()).all()
+        return TodoModel.query.filter(TodoModel.user_id == access_user).order_by(TodoModel.created_at.desc(), TodoModel.id.desc()).all()
 
     @jwt_required()
     @blp.arguments(TodoSchema)
