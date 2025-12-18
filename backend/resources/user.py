@@ -23,7 +23,12 @@ blp = Blueprint("users", "users", description="Operation on users", url_prefix="
 class UserRegister(MethodView):
     @blp.arguments(UserSchema)
     @blp.doc(security=[])
+    @blp.arguments(UserSchema)
+    @blp.doc(security=[])
     def post(self, user_data):
+        if UserModel.query.filter(UserModel.username == user_data["username"]).first():
+            abort(409, message="A user with that username already exists")
+
         user = UserModel(
             username=user_data["username"],
             password=pbkdf2_sha256.hash(user_data["password"]),
@@ -72,6 +77,15 @@ class UserLogout(MethodView):
         response = make_response()
         unset_jwt_cookies(response)
         return response, 204
+
+
+@blp.route("/me")
+class UserDetails(MethodView):
+    @jwt_required()
+    @blp.response(200, UserSchema)
+    def get(self):
+        user_id = get_jwt_identity()
+        return UserModel.query.get_or_404(user_id)
 
 
 # 後でredisにblocklist

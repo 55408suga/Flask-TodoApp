@@ -68,6 +68,7 @@ class TodoList(MethodView):
 
     @jwt_required()
     @blp.arguments(TodoSchema)
+    @blp.response(201, TodoSchema)
     def post(self, todo_data):
         access_user = int(get_jwt_identity())
         todo = TodoModel(**todo_data, user_id=access_user)
@@ -76,4 +77,4 @@ class TodoList(MethodView):
             db.session.commit()
         except SQLAlchemyError:
             abort(500, message="an error occured while inserting the todo")
-        return "", 204
+        return todo
