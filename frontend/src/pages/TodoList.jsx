@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import Calendar from 'react-calendar';
+import './Calendar.css';
 
 const TodoList = () => {
     const [todos, setTodos] = useState([]);
@@ -8,6 +10,7 @@ const TodoList = () => {
     const [error, setError] = useState(null);
     const [search, setSearch] = useState('');
     const [user, setUser] = useState(null);
+    const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
     const navigate = useNavigate();
 
     const fetchUser = async () => {
@@ -123,9 +126,55 @@ const TodoList = () => {
                 </button>
             </form>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="flex justify-end gap-2 mb-4">
+                <button
+                    onClick={() => setViewMode('list')}
+                    className={`px-4 py-2 rounded-lg transition ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                >
+                    List View
+                </button>
+                <button
+                    onClick={() => setViewMode('calendar')}
+                    className={`px-4 py-2 rounded-lg transition ${viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                >
+                    Calendar View
+                </button>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-4">
                 {loading ? (
                     <div className="p-8 text-center text-gray-500">Loading...</div>
+                ) : viewMode === 'calendar' ? (
+                    <div className="flex justify-center">
+                        <Calendar
+                            tileContent={({ date, view }) => {
+                                if (view === 'month') {
+                                    const dayTodos = todos.filter(todo => {
+                                        if (!todo.deadline) return false;
+                                        const todoDate = new Date(todo.deadline);
+                                        return todoDate.getDate() === date.getDate() &&
+                                            todoDate.getMonth() === date.getMonth() &&
+                                            todoDate.getFullYear() === date.getFullYear();
+                                    });
+
+                                    return (
+                                        <div className="flex flex-col gap-1 h-full">
+                                            {dayTodos.slice(0, 3).map(todo => (
+                                                <div key={todo.id} className={`calendar-todo-item ${todo.is_done ? 'done' : ''}`} title={todo.name}>
+                                                    {todo.name}
+                                                </div>
+                                            ))}
+                                            {dayTodos.length > 3 && (
+                                                <div className="calendar-todo-count">
+                                                    +{dayTodos.length - 3} more
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                }
+                            }}
+                        />
+                    </div>
                 ) : todos.length === 0 ? (
                     <div className="p-8 text-center text-gray-500">No todos found.</div>
                 ) : (
