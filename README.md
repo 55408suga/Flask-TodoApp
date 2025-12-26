@@ -30,23 +30,13 @@ portfolio-todoapp/
 - **Tailwind CSS**
 
 ## 起動方法
-
-### Backend (Docker)
 ```bash
-cd backend
 docker compose up --build
 ```
-APIサーバーが http://localhost:5000 で起動します。
-Swagger UI: http://localhost:5000/swagger-ui
-
-### Frontend (Local)
-```bash
-cd frontend
-npm install
-npm run dev
-```
-フロントエンド開発サーバーが http://localhost:5173 で起動します。
-プロキシ設定により、`/api` へのリクエストは自動的にバックエンドに転送されます。
+- APIサーバーが http://localhost:5000 で起動します。
+- Swagger UI: http://localhost:5000/swagger-ui
+- フロントエンド開発サーバーが http://localhost:3000 で起動します。
+- プロキシ設定により、`/api` へのリクエストは自動的にバックエンドに転送されます。
 
 ## 機能一覧
 
