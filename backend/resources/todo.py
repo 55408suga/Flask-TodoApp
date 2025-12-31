@@ -2,6 +2,7 @@ from flask import request
 from flask_smorest import abort, Blueprint
 from flask.views import MethodView
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from db import db
 from models import TodoModel
@@ -61,10 +62,20 @@ class TodoList(MethodView):
         access_user = int(get_jwt_identity())
         name = request.args.get("name")
         if name:
-            return TodoModel.query.filter(
-                TodoModel.user_id == access_user, TodoModel.name.contains(name)
-            ).order_by(TodoModel.created_at.desc(), TodoModel.id.desc()).all()
-        return TodoModel.query.filter(TodoModel.user_id == access_user).order_by(TodoModel.created_at.desc(), TodoModel.id.desc()).all()
+            return (
+                TodoModel.query.filter(
+                    TodoModel.user_id == access_user, TodoModel.name.contains(name)
+                )
+                .options(joinedload(TodoModel.tags))
+                .order_by(TodoModel.created_at.desc(), TodoModel.id.desc())
+                .all()
+            )
+        return (
+            TodoModel.query.filter(TodoModel.user_id == access_user)
+            .options(joinedload(TodoModel.tags))
+            .order_by(TodoModel.created_at.desc(), TodoModel.id.desc())
+            .all()
+        )
 
     @jwt_required()
     @blp.arguments(TodoSchema)
